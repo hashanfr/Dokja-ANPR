@@ -1,0 +1,560 @@
+```html
+{% extends "base.html" %}
+
+{% block title %}
+DOK-ANPR | Dashboard
+{% endblock %}
+
+{% block page_title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+
+<!-- Dashboard Header -->
+
+<div class="dashboard-header">
+
+    <div>
+
+        <p class="muted-text">
+            Real-time overview of vehicle detection
+            and number plate recognition.
+        </p>
+
+    </div>
+
+
+    <a
+        href="{{ url_for('video.analysis') }}"
+        class="btn btn-primary"
+    >
+
+        <i class="bi bi-play-fill"></i>
+
+        Analyze Video
+
+    </a>
+
+</div>
+
+
+
+<!-- Statistics -->
+
+<div class="stats-grid">
+
+
+    <!-- Total Detections -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-database"></i>
+        </div>
+
+        <div>
+
+            <span>Total Detections</span>
+
+            <strong>
+                {{ total_detections or 0 }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Unique Plates -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-fingerprint"></i>
+        </div>
+
+        <div>
+
+            <span>Unique Plates</span>
+
+            <strong>
+                {{ unique_plates or 0 }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Plates Detected -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-credit-card-2-front"></i>
+        </div>
+
+        <div>
+
+            <span>Plates Detected</span>
+
+            <strong>
+                {{ total_detections or 0 }}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- AI Engine -->
+
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-cpu"></i>
+        </div>
+
+        <div>
+
+            <span>AI Engine</span>
+
+            <strong class="text-success">
+                READY
+            </strong>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- Dashboard Grid -->
+
+<div class="dashboard-grid">
+
+
+    <!-- Vehicle Distribution -->
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-label">
+                    VEHICLE ANALYTICS
+                </span>
+
+                <h3>
+                    Vehicle Distribution
+                </h3>
+
+            </div>
+
+            <i class="bi bi-pie-chart"></i>
+
+        </div>
+
+
+        <div class="chart-container">
+
+            {% if vehicle_counts %}
+
+                <canvas id="vehicleChart"></canvas>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <i class="bi bi-pie-chart"></i>
+
+                    <p>
+                        No vehicle detections yet.
+                    </p>
+
+                    <span>
+                        Upload a video to begin analysis.
+                    </span>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Latest Detection -->
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-label">
+                    LATEST EVENT
+                </span>
+
+                <h3>
+                    Latest Detection
+                </h3>
+
+            </div>
+
+            <span class="live-badge">
+                LIVE
+            </span>
+
+        </div>
+
+
+
+        {% if recent_detections %}
+
+            {% set latest = recent_detections[0] %}
+
+            <div class="latest-detection">
+
+
+                <!-- Plate -->
+
+                <div class="plate-display">
+                    {{ latest.plate_number }}
+                </div>
+
+
+
+                <!-- Detection Information -->
+
+                <div class="latest-meta">
+
+
+                    <div>
+
+                        <span>
+                            Vehicle
+                        </span>
+
+                        <strong>
+                            {{ latest.vehicle_type or "Unknown" }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Camera
+                        </span>
+
+                        <strong>
+                            {{ latest.camera_number or "N/A" }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Location
+                        </span>
+
+                        <strong>
+                            {{ latest.location or "Unknown" }}
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Time
+                        </span>
+
+                        <strong>
+                            {{ latest.timestamp }}
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        {% else %}
+
+
+            <div class="empty-state">
+
+                <i class="bi bi-camera-video"></i>
+
+                <p>
+                    No vehicle detections yet.
+                </p>
+
+                <span>
+                    Upload a video to begin analysis.
+                </span>
+
+            </div>
+
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+
+<!-- Recent Detections -->
+
+<div class="panel mt-4">
+
+
+    <div class="panel-header">
+
+        <div>
+
+            <span class="panel-label">
+                DETECTION LOG
+            </span>
+
+            <h3>
+                Recent Detections
+            </h3>
+
+        </div>
+
+
+        <a
+            href="{{ url_for('detections.detections') }}"
+            class="view-all"
+        >
+
+            View All
+
+            <i class="bi bi-arrow-right"></i>
+
+        </a>
+
+    </div>
+
+
+
+    <div class="table-responsive">
+
+        <table class="table detection-table">
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        ID
+                    </th>
+
+                    <th>
+                        Plate Number
+                    </th>
+
+                    <th>
+                        Vehicle
+                    </th>
+
+                    <th>
+                        Camera
+                    </th>
+
+                    <th>
+                        Location
+                    </th>
+
+                    <th>
+                        Timestamp
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+
+            <tbody>
+
+
+                {% for detection in recent_detections %}
+
+                    <tr>
+
+
+                        <td>
+                            #{{ detection.id }}
+                        </td>
+
+
+                        <td>
+
+                            <span class="plate-badge">
+                                {{ detection.plate_number }}
+                            </span>
+
+                        </td>
+
+
+                        <td>
+                            {{ detection.vehicle_type or "Unknown" }}
+                        </td>
+
+
+                        <td>
+                            {{ detection.camera_number or "N/A" }}
+                        </td>
+
+
+                        <td>
+                            {{ detection.location or "Unknown" }}
+                        </td>
+
+
+                        <td>
+                            {{ detection.timestamp }}
+                        </td>
+
+
+                    </tr>
+
+
+                {% else %}
+
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="text-center py-5"
+                        >
+
+                            <div class="empty-state">
+
+                                <i class="bi bi-database"></i>
+
+                                <p>
+                                    No detections available.
+                                </p>
+
+                                <span>
+                                    Analyze a video to populate the detection log.
+                                </span>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+
+                {% endfor %}
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+{% if vehicle_counts %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const canvas = document.getElementById("vehicleChart");
+
+    if (!canvas) {
+        return;
+    }
+
+    const vehicleData = JSON.parse('{{ vehicle_counts | tojson }}');
+
+    const labels = Object.keys(vehicleData);
+    const values = Object.values(vehicleData);
+
+    if (labels.length === 0) {
+        return;
+    }
+
+    new Chart(canvas, {
+
+        type: "doughnut",
+
+        data: {
+
+            labels: labels,
+
+            datasets: [{
+
+                label: "Vehicles",
+
+                data: values,
+
+                borderWidth: 1
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+
+                    position: "bottom"
+
+                }
+
+            }
+
+        }
+
+    });
+
+});
+
+</script>
+
+{% endif %}
+
+{% endblock %}
+```

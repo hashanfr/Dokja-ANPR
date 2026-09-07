@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}
+DOK-ANPR | Video Analysis
+{% endblock %}
+
+{% block page_title %}
+Video Analysis
+{% endblock %}
+
+{% block content %}
+
+<div class="analysis-layout">
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-label">
+                    VIDEO INPUT
+                </span>
+
+                <h3>
+                    Analyze Traffic Video
+                </h3>
+
+            </div>
+
+            <i class="bi bi-camera-video"></i>
+
+        </div>
+
+
+        <form
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+            <div class="upload-zone">
+
+                <i class="bi bi-cloud-arrow-up"></i>
+
+                <h4>
+                    Upload Traffic Video
+                </h4>
+
+                <p>
+                    MP4, AVI, MOV or MKV
+                </p>
+
+                <input
+                    type="file"
+                    name="video"
+                    accept=".mp4,.avi,.mov,.mkv"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-grid">
+
+                <div>
+
+                    <label>
+                        Camera Number
+                    </label>
+
+                    <input
+                        type="text"
+                        name="camera_number"
+                        class="form-control"
+                        value="CAM-01"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Location
+                    </label>
+
+                    <input
+                        type="text"
+                        name="location"
+                        class="form-control"
+                        value="Chennai - GST Road"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn btn-primary analysis-btn"
+            >
+
+                <i class="bi bi-play-fill"></i>
+
+                Start Analysis
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-label">
+                    PROCESSING STATUS
+                </span>
+
+                <h3>
+                    Analysis Results
+                </h3>
+
+            </div>
+
+        </div>
+
+
+        {% if result %}
+
+            {% if result.success %}
+
+                <div class="result-grid">
+
+                    <div class="result-card">
+                        <span>Frames Processed</span>
+                        <strong>
+                            {{ result.frames_processed }}
+                        </strong>
+                    </div>
+
+                    <div class="result-card">
+                        <span>Vehicles Detected</span>
+                        <strong>
+                            {{ result.vehicles_detected }}
+                        </strong>
+                    </div>
+
+                    <div class="result-card">
+                        <span>Plates Detected</span>
+                        <strong>
+                            {{ result.plates_detected }}
+                        </strong>
+                    </div>
+
+                    <div class="result-card">
+                        <span>Processing FPS</span>
+                        <strong>
+                            {{ result.processing_fps }}
+                        </strong>
+                    </div>
+
+                </div>
+
+                <div class="success-message">
+
+                    <i class="bi bi-check-circle"></i>
+
+                    Video analysis completed successfully.
+
+                </div>
+
+            {% else %}
+
+                <div class="error-state">
+
+                    <i class="bi bi-exclamation-triangle"></i>
+
+                    <h4>
+                        Processing Failed
+                    </h4>
+
+                    <p>
+                        {{ result.error }}
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        {% else %}
+
+            <div class="empty-state large">
+
+                <i class="bi bi-film"></i>
+
+                <h4>
+                    Ready for Analysis
+                </h4>
+
+                <p>
+                    Upload a traffic video and start
+                    the ANPR pipeline.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

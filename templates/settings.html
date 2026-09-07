@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}
+DOK-ANPR | Settings
+{% endblock %}
+
+{% block page_title %}
+System Settings
+{% endblock %}
+
+{% block content %}
+
+<div class="settings-grid">
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-label">
+                    CAMERA CONFIGURATION
+                </span>
+
+                <h3>
+                    Camera Settings
+                </h3>
+
+            </div>
+
+            <i class="bi bi-camera"></i>
+
+        </div>
+
+
+        <div class="setting-item">
+
+            <label>
+                Camera Number
+            </label>
+
+            <input
+                type="text"
+                class="form-control"
+                value="CAM-01"
+            >
+
+        </div>
+
+
+        <div class="setting-item">
+
+            <label>
+                Camera Location
+            </label>
+
+            <input
+                type="text"
+                class="form-control"
+                value="Chennai - GST Road"
+            >
+
+        </div>
+
+    </div>
+
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-label">
+                    AI CONFIGURATION
+                </span>
+
+                <h3>
+                    Detection Thresholds
+                </h3>
+
+            </div>
+
+            <i class="bi bi-sliders"></i>
+
+        </div>
+
+
+        <div class="setting-item">
+
+            <label>
+                Vehicle Confidence
+            </label>
+
+            <input
+                type="number"
+                class="form-control"
+                value="0.40"
+                min="0"
+                max="1"
+                step="0.05"
+            >
+
+        </div>
+
+
+        <div class="setting-item">
+
+            <label>
+                Plate Confidence
+            </label>
+
+            <input
+                type="number"
+                class="form-control"
+                value="0.40"
+                min="0"
+                max="1"
+                step="0.05"
+            >
+
+        </div>
+
+
+        <div class="setting-item">
+
+            <label>
+                OCR Confidence
+            </label>
+
+            <input
+                type="number"
+                class="form-control"
+                value="0.40"
+                min="0"
+                max="1"
+                step="0.05"
+            >
+
+        </div>
+
+    </div>
+
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-label">
+                    DUPLICATE CONTROL
+                </span>
+
+                <h3>
+                    Detection Interval
+                </h3>
+
+            </div>
+
+            <i class="bi bi-clock-history"></i>
+
+        </div>
+
+
+        <div class="setting-item">
+
+            <label>
+                Duplicate Interval (seconds)
+            </label>
+
+            <input
+                type="number"
+                class="form-control"
+                value="10"
+                min="1"
+            >
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

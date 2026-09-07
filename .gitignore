@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env
+
+# Database
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+
+# Uploaded videos
+uploads/*
+!uploads/.gitkeep
+
+# Generated snapshots
+static/snapshots/*
+!static/snapshots/.gitkeep
+
+# Training and inference runs
+runs/
+
+# AI models
+models/**/*.pt
+models/**/*.onnx
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp

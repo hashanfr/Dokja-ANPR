@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}
+DOK-ANPR | Vehicle Details
+{% endblock %}
+
+{% block page_title %}
+Vehicle Details
+{% endblock %}
+
+{% block content %}
+
+<div class="detail-layout">
+
+    <div class="panel">
+
+        <span class="panel-label">
+            DETECTION SNAPSHOT
+        </span>
+
+        {% if detection.snapshot_path %}
+
+            <img
+                src="{{ url_for(
+                    'static',
+                    filename=detection.snapshot_path
+                ) }}"
+                class="detection-image"
+                alt="Vehicle snapshot"
+            >
+
+        {% else %}
+
+            <div class="image-placeholder">
+
+                <i class="bi bi-camera"></i>
+
+                <span>
+                    Snapshot unavailable
+                </span>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="panel">
+
+        <span class="panel-label">
+            DETECTION INFORMATION
+        </span>
+
+        <div class="plate-display detail">
+            {{ detection.plate_number }}
+        </div>
+
+
+        <div class="detail-list">
+
+            <div>
+                <span>Vehicle Type</span>
+                <strong>
+                    {{ detection.vehicle_type }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Timestamp</span>
+                <strong>
+                    {{ detection.timestamp }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Camera</span>
+                <strong>
+                    {{ detection.camera_number }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Location</span>
+                <strong>
+                    {{ detection.location }}
+                </strong>
+            </div>
+
+            <div>
+                <span>Vehicle Confidence</span>
+                <strong>
+                    {% if detection.vehicle_confidence %}
+                        {{ "%.1f"|format(
+                            detection.vehicle_confidence * 100
+                        ) }}%
+                    {% else %}
+                        —
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div>
+                <span>Plate Confidence</span>
+                <strong>
+                    {% if detection.plate_confidence %}
+                        {{ "%.1f"|format(
+                            detection.plate_confidence * 100
+                        ) }}%
+                    {% else %}
+                        —
+                    {% endif %}
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

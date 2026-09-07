@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}
+DOK-ANPR | Detections
+{% endblock %}
+
+{% block page_title %}
+Detection Records
+{% endblock %}
+
+{% block content %}
+
+<div class="panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span class="panel-label">
+                ANPR DATABASE
+            </span>
+
+            <h3>
+                Detection Records
+            </h3>
+
+        </div>
+
+    </div>
+
+
+    <form
+        method="GET"
+        class="filter-bar"
+    >
+
+        <input
+            type="text"
+            name="search"
+            class="form-control"
+            placeholder="Search plate number..."
+            value="{{ search }}"
+        >
+
+
+        <select
+            name="vehicle_type"
+            class="form-select"
+        >
+
+            <option value="">
+                All Vehicles
+            </option>
+
+            {% for type in [
+                "Car",
+                "Bike",
+                "Bus",
+                "Truck",
+                "Van",
+                "Other"
+            ] %}
+
+                <option
+                    value="{{ type }}"
+                    {% if vehicle_type == type %}
+                    selected
+                    {% endif %}
+                >
+                    {{ type }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <input
+            type="text"
+            name="camera"
+            class="form-control"
+            placeholder="Camera"
+            value="{{ camera }}"
+        >
+
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+
+            <i class="bi bi-search"></i>
+
+            Search
+
+        </button>
+
+    </form>
+
+
+    <div class="table-responsive">
+
+        <table class="table detection-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Plate</th>
+                    <th>Vehicle</th>
+                    <th>Camera</th>
+                    <th>Location</th>
+                    <th>Confidence</th>
+                    <th>Timestamp</th>
+                    <th></th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for detection in detections %}
+
+                    <tr>
+
+                        <td>
+                            #{{ detection.id }}
+                        </td>
+
+                        <td>
+
+                            <span class="plate-badge">
+                                {{ detection.plate_number }}
+                            </span>
+
+                        </td>
+
+                        <td>
+                            {{ detection.vehicle_type }}
+                        </td>
+
+                        <td>
+                            {{ detection.camera_number }}
+                        </td>
+
+                        <td>
+                            {{ detection.location }}
+                        </td>
+
+                        <td>
+
+                            {% if detection.plate_confidence %}
+
+                                {{ "%.0f"|format(
+                                    detection.plate_confidence * 100
+                                ) }}%
+
+                            {% else %}
+
+                                —
+
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+                            {{ detection.timestamp }}
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="{{
+                                    url_for(
+                                        'detections.vehicle_details',
+                                        detection_id=detection.id
+                                    )
+                                }}"
+                                class="icon-btn"
+                            >
+
+                                <i class="bi bi-arrow-up-right"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="text-center py-5"
+                        >
+
+                            <div class="empty-state">
+
+                                <i class="bi bi-search"></i>
+
+                                <p>
+                                    No detections found.
+                                </p>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

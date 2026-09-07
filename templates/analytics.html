@@ -1,0 +1,204 @@
+```html
+{% extends "base.html" %}
+
+{% block title %}
+DOK-ANPR | Analytics
+{% endblock %}
+
+{% block page_title %}
+Analytics
+{% endblock %}
+
+{% block content %}
+
+<div class="stats-grid">
+
+    <!-- Total Detections -->
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-database"></i>
+        </div>
+
+        <div>
+            <span>Total Detections</span>
+
+            <strong>
+                {{ total or 0 }}
+            </strong>
+        </div>
+
+    </div>
+
+
+    <!-- Unique Plates -->
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-fingerprint"></i>
+        </div>
+
+        <div>
+            <span>Unique Plates</span>
+
+            <strong>
+                {{ unique_plates or 0 }}
+            </strong>
+        </div>
+
+    </div>
+
+
+    <!-- Most Detected -->
+    <div class="stat-card">
+
+        <div class="stat-icon">
+            <i class="bi bi-trophy"></i>
+        </div>
+
+        <div>
+            <span>Most Detected</span>
+
+            <strong>
+                {{ most_detected or "—" }}
+            </strong>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Vehicle Distribution -->
+
+<div class="panel mt-4">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span class="panel-label">
+                VEHICLE INTELLIGENCE
+            </span>
+
+            <h3>
+                Vehicle Distribution
+            </h3>
+
+        </div>
+
+        <i class="bi bi-bar-chart"></i>
+
+    </div>
+
+
+    <div class="chart-large">
+
+        {% if vehicle_distribution %}
+
+            <canvas id="analyticsChart"></canvas>
+
+        {% else %}
+
+            <div class="empty-state">
+
+                <i class="bi bi-bar-chart"></i>
+
+                <p>
+                    No vehicle data available.
+                </p>
+
+                <span>
+                    Upload and analyze a video to generate analytics.
+                </span>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+{% if vehicle_distribution %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const canvas = document.getElementById("analyticsChart");
+
+    if (!canvas) {
+        return;
+    }
+
+    const vehicleData = JSON.parse('{{ vehicle_distribution | tojson }}');
+
+    const labels = Object.keys(vehicleData);
+    const values = Object.values(vehicleData);
+
+    if (labels.length === 0) {
+        return;
+    }
+
+    new Chart(canvas, {
+
+        type: "bar",
+
+        data: {
+
+            labels: labels,
+
+            datasets: [{
+                label: "Detections",
+                data: values,
+                borderWidth: 1
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    ticks: {
+                        precision: 0
+                    }
+
+                }
+
+            },
+
+            plugins: {
+
+                legend: {
+                    display: true
+                }
+
+            }
+
+        }
+
+    });
+
+});
+
+</script>
+
+{% endif %}
+
+{% endblock %}
+```
