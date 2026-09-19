@@ -1,9 +1,15 @@
 from flask import (
     Blueprint,
+    current_app,
     render_template,
-    request
+    redirect,
+    request,
+    url_for
 )
 
+import os
+
+from database.database import db
 from database.models import Detection
 
 
@@ -98,4 +104,74 @@ def vehicle_details(
     return render_template(
         "vehicle_details.html",
         detection=detection
+    )
+
+
+@detections_bp.route(
+    "/<int:detection_id>/delete",
+    methods=["POST"]
+)
+def delete_detection(
+    detection_id
+):
+
+    detection = (
+        Detection.query.get_or_404(
+            detection_id
+        )
+    )
+
+    if detection.snapshot_path:
+
+        snapshot_path = os.path.join(
+            current_app.static_folder,
+            detection.snapshot_path
+        )
+
+        if os.path.isfile(snapshot_path):
+            os.remove(snapshot_path)
+
+    db.session.delete(detection)
+    db.session.commit()
+
+    return redirect(
+        url_for(
+            "detections.detections"
+        )
+    )
+
+
+@detections_bp.route(
+    "/delete-all",
+    methods=["POST"]
+)
+def delete_all_detections():
+
+    detections_list = (
+        Detection.query.all()
+    )
+
+    for detection in detections_list:
+
+        if not detection.snapshot_path:
+            continue
+
+        snapshot_path = os.path.join(
+            current_app.static_folder,
+            detection.snapshot_path
+        )
+
+        if os.path.isfile(snapshot_path):
+            os.remove(snapshot_path)
+
+    Detection.query.delete(
+        synchronize_session=False
+    )
+
+    db.session.commit()
+
+    return redirect(
+        url_for(
+            "detections.detections"
+        )
     )

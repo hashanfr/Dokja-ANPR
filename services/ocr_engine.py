@@ -54,6 +54,71 @@ class OCREngine:
 
         return text
 
+    def enhance_plate_image(
+        self,
+        plate_image
+    ):
+
+        if (
+            plate_image is None
+            or plate_image.size == 0
+        ):
+
+            return None
+
+        height, width = (
+            plate_image.shape[:2]
+        )
+
+        scale = Config.PLATE_IMAGE_SCALE
+
+        resized = cv2.resize(
+            plate_image,
+            (
+                max(1, width * scale),
+                max(1, height * scale)
+            ),
+            interpolation=cv2.INTER_CUBIC
+        )
+
+        denoised = cv2.bilateralFilter(
+            resized,
+            7,
+            45,
+            45
+        )
+
+        gray = cv2.cvtColor(
+            denoised,
+            cv2.COLOR_BGR2GRAY
+        )
+
+        clahe = cv2.createCLAHE(
+            clipLimit=2.0,
+            tileGridSize=(8, 8)
+        )
+
+        contrast = clahe.apply(gray)
+
+        blurred = cv2.GaussianBlur(
+            contrast,
+            (0, 0),
+            1.2
+        )
+
+        sharpened = cv2.addWeighted(
+            contrast,
+            1.6,
+            blurred,
+            -0.6,
+            0
+        )
+
+        return cv2.cvtColor(
+            sharpened,
+            cv2.COLOR_GRAY2BGR
+        )
+
     def preprocess_variants(
         self,
         plate_image
@@ -66,20 +131,12 @@ class OCREngine:
 
             return []
 
-        height, width = (
-            plate_image.shape[:2]
+        resized = self.enhance_plate_image(
+            plate_image
         )
 
-        scale = 4
-
-        resized = cv2.resize(
-            plate_image,
-            (
-                max(1, width * scale),
-                max(1, height * scale)
-            ),
-            interpolation=cv2.INTER_CUBIC
-        )
+        if resized is None:
+            return []
 
         gray = cv2.cvtColor(
             resized,
@@ -89,13 +146,8 @@ class OCREngine:
         # Variant 1
         normal = gray
 
-        # Variant 2
-        clahe = cv2.createCLAHE(
-            clipLimit=2.0,
-            tileGridSize=(8, 8)
-        )
-
-        enhanced = clahe.apply(gray)
+        # The enhanced grayscale image is the primary OCR variant.
+        enhanced = gray
 
         # Variant 3
         _, binary = cv2.threshold(

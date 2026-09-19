@@ -26,6 +26,26 @@ Detection Records
 
         </div>
 
+        <form
+            method="POST"
+            action="{{ url_for(
+                'detections.delete_all_detections'
+            ) }}"
+            onsubmit="return confirm('Delete all detections and snapshots?');"
+        >
+
+            <button
+                type="submit"
+                class="btn btn-danger"
+            >
+
+                <i class="bi bi-trash"></i>
+                Delete All
+
+            </button>
+
+        </form>
+
     </div>
 
 
@@ -172,19 +192,45 @@ Detection Records
 
                         <td>
 
-                            <a
-                                href="{{
-                                    url_for(
-                                        'detections.vehicle_details',
+                            <div class="d-flex gap-2">
+
+                                <a
+                                    href="{{
+                                        url_for(
+                                            'detections.vehicle_details',
+                                            detection_id=detection.id
+                                        )
+                                    }}"
+                                    class="icon-btn"
+                                    title="View detection"
+                                >
+
+                                    <i class="bi bi-arrow-up-right"></i>
+
+                                </a>
+
+                                <form
+                                    method="POST"
+                                    action="{{ url_for(
+                                        'detections.delete_detection',
                                         detection_id=detection.id
-                                    )
-                                }}"
-                                class="icon-btn"
-                            >
+                                    ) }}"
+                                    onsubmit="return confirm('Delete this detection?');"
+                                >
 
-                                <i class="bi bi-arrow-up-right"></i>
+                                    <button
+                                        type="submit"
+                                        class="icon-btn"
+                                        title="Delete detection"
+                                    >
 
-                            </a>
+                                        <i class="bi bi-trash"></i>
+
+                                    </button>
+
+                                </form>
+
+                            </div>
 
                         </td>
 

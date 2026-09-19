@@ -44,6 +44,80 @@ class VideoProcessor:
             DetectionManager()
         )
 
+    def find_completed_vehicle(
+        self,
+        vehicle_bbox,
+        completed_vehicles,
+        frame_number
+    ):
+
+        for vehicle in completed_vehicles:
+
+            if (
+                frame_number
+                - vehicle["last_seen_frame"]
+                > Config.VEHICLE_TRACK_MAX_GAP_FRAMES
+            ):
+                continue
+
+            ax1, ay1, ax2, ay2 = (
+                vehicle["bbox"]
+            )
+
+            bx1, by1, bx2, by2 = (
+                vehicle_bbox
+            )
+
+            intersection_x1 = max(ax1, bx1)
+            intersection_y1 = max(ay1, by1)
+            intersection_x2 = min(ax2, bx2)
+            intersection_y2 = min(ay2, by2)
+
+            intersection_width = max(
+                0,
+                intersection_x2 - intersection_x1
+            )
+
+            intersection_height = max(
+                0,
+                intersection_y2 - intersection_y1
+            )
+
+            intersection_area = (
+                intersection_width
+                * intersection_height
+            )
+
+            area_a = max(0, ax2 - ax1) * max(
+                0,
+                ay2 - ay1
+            )
+
+            area_b = max(0, bx2 - bx1) * max(
+                0,
+                by2 - by1
+            )
+
+            union_area = (
+                area_a
+                + area_b
+                - intersection_area
+            )
+
+            if union_area <= 0:
+                continue
+
+            iou = intersection_area / union_area
+
+            if iou >= Config.VEHICLE_TRACK_IOU_THRESHOLD:
+
+                vehicle["bbox"] = vehicle_bbox
+                vehicle["last_seen_frame"] = frame_number
+
+                return True
+
+        return False
+
     def save_snapshot(
         self,
         frame,
@@ -108,9 +182,19 @@ class VideoProcessor:
                     x1:x2
                 ]
 
+            enhanced_crop = (
+                self.ocr_engine.enhance_plate_image(
+                    crop
+                )
+            )
+
+            if enhanced_crop is None:
+                enhanced_crop = crop
+
             cv2.imwrite(
                 full_path,
-                crop
+                enhanced_crop,
+                [cv2.IMWRITE_JPEG_QUALITY, 98]
             )
 
             # Store web-accessible relative path
@@ -184,6 +268,7 @@ class VideoProcessor:
         plate_detections_total = 0
         ocr_success_total = 0
         database_saved_total = 0
+        completed_vehicles = []
 
         start_time = time.time()
 
@@ -294,6 +379,20 @@ class VideoProcessor:
                 if (
                     x2 <= x1
                     or y2 <= y1
+                ):
+                    continue
+
+                absolute_vehicle_bbox = (
+                    x1,
+                    y1,
+                    x2,
+                    y2
+                )
+
+                if self.find_completed_vehicle(
+                    absolute_vehicle_bbox,
+                    completed_vehicles,
+                    frame_number
                 ):
                     continue
 
@@ -479,6 +578,11 @@ class VideoProcessor:
                     if saved:
 
                         database_saved_total += 1
+
+                        completed_vehicles.append({
+                            "bbox": absolute_vehicle_bbox,
+                            "last_seen_frame": frame_number
+                        })
 
                         print(
                             "[SUCCESS] Detection "

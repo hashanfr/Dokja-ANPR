@@ -84,10 +84,17 @@ class Config:
 
     OCR_CONFIDENCE_THRESHOLD = 0.25
 
+    PLATE_IMAGE_SCALE = 6
+
     # Process every Nth frame.
     # 1 = every frame
     # 2 = every second frame
     FRAME_SKIP = 2
+
+    # Maximum frame gap for matching a completed vehicle track.
+    VEHICLE_TRACK_MAX_GAP_FRAMES = 30
+
+    VEHICLE_TRACK_IOU_THRESHOLD = 0.40
 
     # --------------------------------------------------
     # DUPLICATE CONTROL
