@@ -197,7 +197,7 @@ class VideoProcessor:
                 [cv2.IMWRITE_JPEG_QUALITY, 98]
             )
 
-            # Store web-accessible relative path
+                                                
             return os.path.join(
                 "snapshots",
                 filename
@@ -306,7 +306,7 @@ class VideoProcessor:
 
             frame_number += 1
 
-            # Skip frames to speed processing
+                                             
             if (
                 frame_number
                 % Config.FRAME_SKIP
@@ -316,14 +316,14 @@ class VideoProcessor:
 
             processed_frames += 1
 
-            # Video timestamp
+                             
             video_time_seconds = (
                 frame_number / fps
             )
 
-            # --------------------------------------------------
-            # VEHICLE DETECTION
-            # --------------------------------------------------
+                                                                
+                               
+                                                                
 
             vehicles = (
                 self.vehicle_detector.detect(
@@ -342,9 +342,9 @@ class VideoProcessor:
                     f"Vehicles: {len(vehicles)}"
                 )
 
-            # --------------------------------------------------
-            # PROCESS EACH VEHICLE
-            # --------------------------------------------------
+                                                                
+                                  
+                                                                
 
             for vehicle in vehicles:
 
@@ -407,9 +407,9 @@ class VideoProcessor:
                 ):
                     continue
 
-                # --------------------------------------------------
-                # PLATE DETECTION
-                # --------------------------------------------------
+                                                                    
+                                 
+                                                                    
 
                 plates = (
                     self.plate_detector.detect(
@@ -482,9 +482,9 @@ class VideoProcessor:
                     ):
                         continue
 
-                    # --------------------------------------------------
-                    # OCR
-                    # --------------------------------------------------
+                                                                        
+                         
+                                                                        
 
                     ocr_result = (
                         self.ocr_engine.read_plate(
@@ -516,8 +516,8 @@ class VideoProcessor:
                         f"({ocr_result['confidence']:.2f})"
                     )
 
-                    # Convert plate bbox back
-                    # to original frame coordinates
+                                             
+                                                   
                     absolute_plate_bbox = (
                         x1 + px1,
                         y1 + py1,
@@ -533,14 +533,14 @@ class VideoProcessor:
                         )
                     )
 
-                    # Timestamp based on video position
+                                                       
                     detection_time = (
                         datetime.utcnow()
                     )
 
-                    # --------------------------------------------------
-                    # SAVE DATABASE RECORD
-                    # --------------------------------------------------
+                                                                        
+                                          
+                                                                        
 
                     saved = (
                         self.detection_manager
@@ -589,7 +589,7 @@ class VideoProcessor:
                             "saved to database."
                         )
 
-            # Progress display
+                              
             if (
                 frame_number % 100 == 0
             ):

@@ -143,13 +143,13 @@ class OCREngine:
             cv2.COLOR_BGR2GRAY
         )
 
-        # Variant 1
+                   
         normal = gray
 
-        # The enhanced grayscale image is the primary OCR variant.
+                                                                  
         enhanced = gray
 
-        # Variant 3
+                   
         _, binary = cv2.threshold(
             enhanced,
             0,
@@ -158,7 +158,7 @@ class OCREngine:
             + cv2.THRESH_OTSU
         )
 
-        # Variant 4
+                   
         adaptive = cv2.adaptiveThreshold(
             enhanced,
             255,
@@ -190,7 +190,7 @@ class OCREngine:
         if len(text) > 12:
             return False
 
-        # Must contain letters and numbers
+                                          
         has_letter = bool(
             re.search(
                 r"[A-Z]",
@@ -211,7 +211,7 @@ class OCREngine:
         ):
             return False
 
-        # Indian plate-like pattern
+                                   
         indian_pattern = (
             r"^[A-Z]{2}"
             r"[0-9]{1,2}"
@@ -226,7 +226,7 @@ class OCREngine:
 
             return True
 
-        # More tolerant fallback
+                                
         return (
             len(text) >= 6
             and len(text) <= 10
@@ -296,8 +296,8 @@ class OCREngine:
             if not candidates:
                 return None
 
-            # Prefer candidates that look like
-            # registration plates.
+                                              
+                                  
             valid = [
                 item
                 for item in candidates

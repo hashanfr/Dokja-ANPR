@@ -10,9 +10,9 @@ class Config:
 
     SECRET_KEY = "dokja-anpr-secret-key"
 
-    # --------------------------------------------------
-    # DATABASE
-    # --------------------------------------------------
+                                                        
+              
+                                                        
 
     DATA_FOLDER = os.path.join(
         BASE_DIR,
@@ -31,9 +31,9 @@ class Config:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # --------------------------------------------------
-    # UPLOADS
-    # --------------------------------------------------
+                                                        
+             
+                                                        
 
     UPLOAD_FOLDER = os.path.join(
         BASE_DIR,
@@ -56,9 +56,9 @@ class Config:
 
     MAX_CONTENT_LENGTH = 1024 * 1024 * 1024
 
-    # --------------------------------------------------
-    # MODELS
-    # --------------------------------------------------
+                                                        
+            
+                                                        
 
     VEHICLE_MODEL_PATH = os.path.join(
         BASE_DIR,
@@ -74,9 +74,9 @@ class Config:
         "plate_model.pt"
     )
 
-    # --------------------------------------------------
-    # AI SETTINGS
-    # --------------------------------------------------
+                                                        
+                 
+                                                        
 
     VEHICLE_CONFIDENCE_THRESHOLD = 0.25
 
@@ -86,25 +86,25 @@ class Config:
 
     PLATE_IMAGE_SCALE = 6
 
-    # Process every Nth frame.
-    # 1 = every frame
-    # 2 = every second frame
+                              
+                     
+                            
     FRAME_SKIP = 2
 
-    # Maximum frame gap for matching a completed vehicle track.
+                                                               
     VEHICLE_TRACK_MAX_GAP_FRAMES = 30
 
     VEHICLE_TRACK_IOU_THRESHOLD = 0.40
 
-    # --------------------------------------------------
-    # DUPLICATE CONTROL
-    # --------------------------------------------------
+                                                        
+                       
+                                                        
 
     DUPLICATE_INTERVAL_SECONDS = 5
 
-    # --------------------------------------------------
-    # DEFAULT CAMERA
-    # --------------------------------------------------
+                                                        
+                    
+                                                        
 
     DEFAULT_CAMERA_NUMBER = "CAM-01"
 

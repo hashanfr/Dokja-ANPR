@@ -15,16 +15,16 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Initialize database
+                         
     db.init_app(app)
 
-    # Register blueprints
+                         
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(video_bp)
     app.register_blueprint(detections_bp)
     app.register_blueprint(analytics_bp)
 
-    # Create required directories
+                                 
     with app.app_context():
         from database.models import Detection
         db.create_all()

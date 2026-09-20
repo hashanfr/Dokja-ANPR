@@ -7,9 +7,7 @@ document.addEventListener(
         );
 
 
-        /*
-         * Highlight current navigation item
-         */
+        
 
         const currentPath =
             window.location.pathname;
@@ -36,9 +34,7 @@ document.addEventListener(
             });
 
 
-        /*
-         * File upload preview
-         */
+        
 
         const fileInput =
             document.querySelector(
